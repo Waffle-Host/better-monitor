@@ -188,6 +188,7 @@ func extractUsername(line string) string {
 func main() {
 	webhookURL := flag.String("webhook", "", "Discord webhook URL")
 	logPath := flag.String("log", "ssh_monitor.log", "Path to log file")
+	serverName := flag.String("name", "", "Server name for identification in logs")
 	flag.Parse()
 
 	if *webhookURL == "" {
@@ -214,7 +215,11 @@ func main() {
 	}
 
 	scanner := bufio.NewScanner(stdout)
-	startMsg := "🔒 SSH Monitor Started - Watching for suspicious activity..."
+	serverIdentifier := ""
+	if *serverName != "" {
+		serverIdentifier = fmt.Sprintf("[%s] ", *serverName)
+	}
+	startMsg := fmt.Sprintf("%s🔒 SSH Monitor Started - Watching for suspicious activity...", serverIdentifier)
 	log.Println(startMsg)
 	logEvent(logFile, "%s", startMsg)
 
@@ -248,16 +253,16 @@ func main() {
 			var event string
 			if strings.Contains(line, "Accepted") {
 				// Successful login
-				event = fmt.Sprintf("✅ Successful login from %s (%s) as '%s'",
-					ip, location, username)
-				fmt.Printf("✅ Successful login from %s (%s) as '%s'\n",
-					ip, location, username)
+				event = fmt.Sprintf("%s✅ Successful login from %s (%s) as '%s'",
+					serverIdentifier, ip, location, username)
+				fmt.Printf("%s✅ Successful login from %s (%s) as '%s'\n",
+					serverIdentifier, ip, location, username)
 			} else {
 				// Other SSH activity
-				event = fmt.Sprintf("🔍 SSH activity from %s (%s) Subnet: %s",
-					ip, location, subnet)
-				fmt.Printf("🔍 SSH activity from %s (%s) Subnet: %s\n",
-					ip, location, subnet)
+				event = fmt.Sprintf("%s🔍 SSH activity from %s (%s) Subnet: %s",
+					serverIdentifier, ip, location, subnet)
+				fmt.Printf("%s🔍 SSH activity from %s (%s) Subnet: %s\n",
+					serverIdentifier, ip, location, subnet)
 			}
 
 			// Log the event
