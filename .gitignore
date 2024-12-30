@@ -25,6 +25,6 @@ go.work.sum
 .env
 
 # Build
-main
+
 
 ssh_monitor.log
