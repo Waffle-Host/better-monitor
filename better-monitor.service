@@ -1,0 +1,14 @@
+[Unit]
+Description=SSH Monitor Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/bm/better-monitor
+ExecStart=/root/bm/better-monitor/main -webhook YOUR_WEBHOOK_URL
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
