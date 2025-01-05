@@ -117,7 +117,7 @@ func (t *SubnetTracker) trackAttempt(subnet string, webhookURL string, logFile *
 	t.attempts[subnet]++
 
 	// If more than 5 attempts in a minute, blacklist the subnet
-	if t.attempts[subnet] > 5 {
+	if t.attempts[subnet] > 1 {
 		t.blacklist[subnet] = true
 
 		// Format block message
